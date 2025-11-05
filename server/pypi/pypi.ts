@@ -11,6 +11,20 @@ pypi.get("packages/*", pycache, async (c) =>
   fetch(`https://files.pythonhosted.org${c.req.path.replace(basePath(c), "")}`)
 );
 
+pypi.get("simple/", pycache, async (c) => {
+  const res = await fetch(`https://pypi.org/simple/`);
+
+  return new HTMLRewriter()
+    .on("a", {
+      element(element) {
+        let href = element.getAttribute("href") ?? "";
+        if (!href) return;
+        element.setAttribute("href", href.replace("/simple", ""));
+      },
+    })
+    .transform(res);
+});
+
 pypi.get("simple/:module/", pycache, async (c) => {
   const module = c.req.param("module");
   const res = await fetch(`https://pypi.org/simple/${module}/`);
