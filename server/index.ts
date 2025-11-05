@@ -1,12 +1,9 @@
-export default {
-	fetch(request) {
-		const url = new URL(request.url);
+import { Hono } from "hono";
 
-		if (url.pathname.startsWith("/api/")) {
-			return Response.json({
-				name: "Cloudflare",
-			});
-		}
-		return new Response(null, { status: 404 });
-	},
-} satisfies ExportedHandler<Env>;
+import { pypi } from "./pypi/pypi";
+
+export const index = new Hono();
+
+index.route("/pypi", pypi);
+
+export default index;
